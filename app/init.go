@@ -2,6 +2,8 @@ package app
 
 import (
 	"blogbackend/app/db"
+	"fmt"
+
 	"github.com/revel/revel"
 )
 
@@ -13,7 +15,7 @@ var (
 	BuildTime string
 )
 
-func init() {
+func Init() {
 	// Filters is the default set of global filters.
 	revel.Filters = []revel.Filter{
 		revel.PanicFilter,             // Recover from panics and display an error page instead.
@@ -32,6 +34,7 @@ func init() {
 
 	// init db
 	revel.OnAppStart(func() {
+		fmt.Println("db init....")
 		// 数据库
 		db.Init()
 	})
@@ -62,5 +65,3 @@ var HeaderFilter = func(c *revel.Controller, fc []revel.Filter) {
 //		// Dev mode
 //	}
 //}
-
-

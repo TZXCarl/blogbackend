@@ -2,41 +2,29 @@ package db
 
 import (
 	"fmt"
-	"github.com/revel/revel"
+
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
 
+var urlStr = "mongodb://127.0.0.1:27017/blog"
+
 var Session *mgo.Session
 var User *mgo.Collection
+var Note *mgo.Collection
 
 func Init() {
 	fmt.Println("-----------")
-	// config := revel.Config
-	host, _ := revel.Config.String("db.host")
-	port, _ := revel.Config.String("db.port")
-	dbname, _ := revel.Config.String("db.dbname")
-	username, _ := revel.Config.String("db.username")
-	password, _ := revel.Config.String("db.password")
 
-	// usernameAndPassword := (username == "" || password == "") ? "" : username + ":" + password + "@"
-	var usernameAndPassword string;
-	if (username == "" || password == "") {
-		usernameAndPassword = ""
-	} else {
-		username = username + ":" + password + "@"
-	}
-	url := "mongodb://" + usernameAndPassword + host + ":" + port + "/" + dbname
-
-	fmt.Println(url)
 	var err error
-	Session, err := mgo.Dial(url)
+	Session, err := mgo.Dial(urlStr) //建立连接
 	if err != nil {
 		panic(err)
 	}
 	Session.SetMode(mgo.Monotonic, true)
 
-	User = Session.DB(dbname).C("user")
+	User = Session.DB("blog").C("user") //切换相应的数据库和集合
+	Note = Session.DB("blog").C("Note")
 }
 
 func close() {
@@ -251,6 +239,6 @@ func Test(str string) {
 	fmt.Println(str)
 }
 
-func Hello () int {
+func Hello() int {
 	return 1
 }
