@@ -11,8 +11,8 @@ type Note struct {
 	Title       string        `bson:"title"`
 	Content     string        `bson:"content"`
 	UserId      string        `bson:"userId"`
-	CreatedTime string        `bson:"createdTime"`
-	UpdateTime  string        `bson:"updateTime"`
+	CreatedTime int64         `bson:"createdTime"`
+	UpdateTime  int64         `bson:"updateTime"`
 }
 
 func NewNote(title, content string) *Note {

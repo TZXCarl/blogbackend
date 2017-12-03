@@ -21,7 +21,8 @@ func InsertNote(note models.Note) bool {
 
 func findNote(userId, noteId string) models.Note {
 	note := models.Note{}
-	db.GetByQ(db.Note, bson.M{"userId": userId, "id": noteId}, &note)
+	db.GetByQ(db.Note, bson.M{"userId": userId, "_id": bson.ObjectIdHex(noteId)}, &note)
+	// db.Get2(db.Note, bson.ObjectId(noteId), &note)
 	return note
 }
 

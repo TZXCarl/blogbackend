@@ -7,7 +7,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"runtime"
-	"strconv"
 	"time"
 
 	"gopkg.in/mgo.v2/bson"
@@ -63,8 +62,8 @@ func createNote(w http.ResponseWriter, r *http.Request) {
 	}
 	note.Id = bson.NewObjectId()
 	now := time.Now()
-	note.CreatedTime = strconv.FormatInt(now.UTC().UnixNano(), 10)
-	note.UpdateTime = strconv.FormatInt(now.UTC().UnixNano(), 10)
+	note.CreatedTime = now.UTC().Unix()
+	note.UpdateTime = now.UTC().Unix()
 	fmt.Println(note)
 
 	res := InsertNote(*note)
@@ -82,7 +81,29 @@ func createNote(w http.ResponseWriter, r *http.Request) {
 }
 
 func getNote(w http.ResponseWriter, r *http.Request) {
-	// findNote()
+	defer r.Body.Close()
+	userId := r.URL.Query().Get("userId")
+	noteId := r.URL.Query().Get("noteId")
+	note := models.Note{}
+	note = findNote(userId, noteId)
+	fmt.Println(note)
+
+	json, err := json.Marshal(&struct {
+		Note models.Note `json:"data"`
+	}{
+		Note: note,
+	})
+	if err != nil {
+		panic(err)
+	}
+	wc := 0
+	for wc < len(json) {
+		n, err := w.Write(json)
+		if err != nil {
+			panic(err)
+		}
+		wc += n
+	}
 }
 
 func login(w http.ResponseWriter, r *http.Request) {
@@ -128,6 +149,8 @@ func NewRouter() *mux.Router {
 	//保存文档
 	r.HandleFunc("/createNote", createNote).Methods(http.MethodPost)
 
+	//获取文档
+	r.HandleFunc("/getNote", getNote).Methods(http.MethodGet)
 	//hold库存
 	// r.HandleFunc("/skus/hold", HoldPost).Methods(http.MethodPost)
 	return r

@@ -1,13 +1,9 @@
 package models
 
-import (
-	"fmt"
-
-	"github.com/revel/revel"
-)
+import "fmt"
 
 type User struct {
-	// id       bson.ObjectId `bson:"_id"`  //bson.ObjectId: 主键,   bson.NewObjectId():生成新的主键
+	// id       bson.ObjectId `bson:"_id"` //bson.ObjectId: 主键,   bson.NewObjectId():生成新的主键
 	Name     string `bson:"name"`
 	Username string `bson:"username"`
 	Password string
@@ -38,8 +34,4 @@ func NewUser(name string, username string, password string, isadmin bool) *User 
 		return nil
 	}
 	return ret
-}
-
-func (user *User) Validate(v *revel.Validation) {
-
 }
