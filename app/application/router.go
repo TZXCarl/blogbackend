@@ -9,6 +9,7 @@ import (
 	// "strconv"
 	"io"
 	"os"
+	"regexp"
 
 	"github.com/gorilla/mux"
 	"github.com/satori/go.uuid"
@@ -56,13 +57,13 @@ func upload(w http.ResponseWriter, r *http.Request) {
 //}
 
 var uploadPath string = "/data/upload_files"
-
+var rest regexp = /\*/
 func NewRouter() *mux.Router {
 	fs := http.FileServer(http.Dir(uploadPath))
 	r := mux.NewRouter()
 	r.HandleFunc("/upload", upload).Methods(http.MethodPost)
 	//	r.HandleFunc("/files", StaticServer)
-	r.Handle("/files/", http.StripPrefix("/files/", fs))
+	r.Handle(`/files/{rest}`, http.StripPrefix("/files/", fs))
 	r.HandleFunc("/", index).Methods(http.MethodGet)
 	return r
 }
