@@ -1,10 +1,17 @@
 package main
 
 import (
-	"blogbackend/app/application"
+	// "blogbackend/app/application"
 	"net/http"
+	// "runtime"
+	// "strconv"
+	"io"
+	"os"
 
-	_ "github.com/go-sql-driver/mysql"
+	"github.com/gorilla/mux"
+	"github.com/satori/go.uuid"
+
+	// _ "github.com/go-sql-driver/mysql"
 )
 
 type handler struct {
