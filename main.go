@@ -53,8 +53,8 @@ func upload(w http.ResponseWriter, r *http.Request) {
 		}
 		defer file.Close()
 		fileId, _ := uuid.NewV4()
-		f, err := os.OpenFile("/data/upload_files/"+fileId.String()+"__"+handler.Filename, os.O_WRONLY|os.O_CREATE, 0666)
-		fmt.Println(fileId.String() + "__" + handler.Filename)
+		f, err := os.OpenFile("/data/upload_files/"+fileId.String(), os.O_WRONLY|os.O_CREATE, 0666)
+		fmt.Println(fileId.String())
 		if err != nil {
 			fmt.Println(err)
 			return
