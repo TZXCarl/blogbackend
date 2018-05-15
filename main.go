@@ -5,12 +5,11 @@ import (
 	"net/http"
 	// "runtime"
 	// "strconv"
+	"fmt"
 	"io"
 	"os"
-
-	"github.com/gorilla/mux"
+	//	"github.com/gorilla/mux"
 	"github.com/satori/go.uuid"
-
 	// _ "github.com/go-sql-driver/mysql"
 )
 
@@ -55,6 +54,7 @@ func upload(w http.ResponseWriter, r *http.Request) {
 		defer file.Close()
 		fileId, _ := uuid.NewV4()
 		f, err := os.OpenFile("/data/upload_files/"+fileId.String()+"__"+handler.Filename, os.O_WRONLY|os.O_CREATE, 0666)
+		fmt.Println(fileId.String() + "__" + handler.Filename)
 		if err != nil {
 			fmt.Println(err)
 			return
@@ -66,9 +66,9 @@ func upload(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	var routeHandler http.Handler = &handler{
-		next: application.NewRouter(),
-	}
+	//var routeHandler http.Handler = &handler{
+	//		next: application.NewRouter(),
+	//}
 
 	fs := http.FileServer(http.Dir("/data/upload_files"))
 	// http.Handle("/", routeHandler)
