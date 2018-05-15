@@ -72,7 +72,7 @@ func main() {
 
 	fs := http.FileServer(http.Dir("/data/upload_files"))
 	// http.Handle("/", routeHandler)
-	http.Handle("/files/", http.StripPrefix("/files/", fs))
+	http.Handle("/", http.StripPrefix("/", fs))
 	http.HandleFunc("/upload", upload)
 	http.ListenAndServe(":9010", nil)
 }
