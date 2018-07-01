@@ -1,16 +1,12 @@
 package main
 
 import (
-	// "blogbackend/app/application"
 	"net/http"
-	// "runtime"
-	// "strconv"
 	"fmt"
 	"io"
 	"os"
-	//	"github.com/gorilla/mux"
 	"github.com/satori/go.uuid"
-	// _ "github.com/go-sql-driver/mysql"
+	"file/utils"
 )
 
 type handler struct {
@@ -48,20 +44,18 @@ func upload(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(handler.Filename)
 
 		if err != nil {
-			fmt.Println(err)
-			return
+			utils.HandleHTTPError(w, err);
 		}
 		defer file.Close()
 		fileId, _ := uuid.NewV4()
 		f, err := os.OpenFile("/data/upload_files/"+fileId.String(), os.O_WRONLY|os.O_CREATE, 0666)
 		fmt.Println(fileId.String())
 		if err != nil {
-			fmt.Println(err)
-			return
+			utils.HandleServerError(w, err);
 		}
 		defer f.Close()
 		io.Copy(f, file)
-		fmt.Fprintln(w, "upload ok!")
+		fmt.Fprintln(w, "upload success!")
 	}
 }
 
