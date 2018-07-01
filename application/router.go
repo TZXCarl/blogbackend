@@ -13,6 +13,8 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/satori/go.uuid"
+	"file/port"
+	"file/utils"
 )
 
 func index(w http.ResponseWriter, r *http.Request) {
@@ -24,24 +26,26 @@ func filePath() {
 }
 
 func upload(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("upload")
 	r.ParseMultipartForm(32 << 20)
 	file, handler, err := r.FormFile("file")
-	fmt.Println(handler.Filename)
-
 	if err != nil {
-		fmt.Println(err)
-		return
+		utils.HandleHTTPError(w, err)
 	}
 	defer file.Close()
-	fileId, _ := uuid.NewV4()
-	f, err := os.OpenFile("/data/upload_files/"+fileId.String()+"__"+handler.Filename, os.O_WRONLY|os.O_CREATE, 0666)
+	path, _ := uuid.NewV4()
+	f, err := os.OpenFile("/data/upload_files/"+path.String(), os.O_WRONLY|os.O_CREATE, 0666)
 	if err != nil {
-		fmt.Println(err)
-		return
+		utils.HandleHTTPError(w, err)
 	}
 	defer f.Close()
 	io.Copy(f, file)
-	fmt.Fprintln(w, "upload ok!")
+	fmt.Println(path.String(), handler.Filename, '', utils.GetTimestampString())
+	insertResult := port.InsertFile(path.String(), handler.Filename, '', utils.GetTimestampString())
+	if insertResult != true {
+		utils.HandleServerError(w, err);
+	}
+	fmt.Fprintln(w, "upload success!")
 }
 
 //var staticHandler http.Handler

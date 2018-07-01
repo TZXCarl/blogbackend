@@ -6,9 +6,9 @@ import (
 	// "log"
 	"net/http"
 	// "strings"
-	// "strconv"
+	"strconv"
 	"fmt"
-	// "time"
+	"time"
 	"runtime"
 	"errors"
 )
@@ -99,4 +99,9 @@ func Handle404(w http.ResponseWriter, err error) {
 
 func ResetHTTPErrors() {
 	errs = nil;
+}
+
+
+func GetTimestampString() string {
+	return strconv.FormatInt(time.Now().Unix(), 10);
 }
