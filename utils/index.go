@@ -105,3 +105,7 @@ func ResetHTTPErrors() {
 func GetTimestampString() string {
 	return strconv.FormatInt(time.Now().Unix(), 10);
 }
+
+func GetTimestamp() int64 {
+	return time.Now().Unix();
+}

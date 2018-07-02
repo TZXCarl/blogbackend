@@ -1,7 +1,9 @@
-type File {
-	ID         int        `json:"id"`
+package domain
+
+type File struct{
+	ID         string     `json:"id"`
 	FileName   string     `json:"fileName"`
 	Path       string     `json:"path"`
 	Type       string     `json:"type"`
-	CreateDate string     `json:"createDate"`
+	CreateDate int64      `json:"createDate"`
 }
