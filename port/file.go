@@ -21,19 +21,19 @@ func InsertFile(id string, path string, fileName string, _type string, createDat
 }
 
 
-func GetFiles(offset, end int) ([]*domain.File, error) {
+func GetFiles(offset, end int) ([]*domain.File, int, error) {
 	db, err := sql.Open("mysql", "abelce:Tzx_301214@tcp(111.231.192.70:3306)/admin?parseTime=true")
 	defer db.Close()
 
 	files := []*domain.File{}
+	var count int = 0;
 	stmt, err := db.Prepare(`SELECT * FROM admin.files ORDER BY createDate desc LIMIT ?,?`)
 	rows, err := stmt.Query(offset, end)
 
 	defer rows.Close();  // 防止for循环报错时，不会自动关闭连接
 	if err != nil {
-		return files, err
+		return files, 0, err
 	}
-
 	for rows.Next() {
 		_file := domain.File{}
 		rows.Scan(
@@ -45,7 +45,9 @@ func GetFiles(offset, end int) ([]*domain.File, error) {
 		)
 		files = append(files, &_file)
 	}
+	stmt, err = db.Prepare(`SELECT count(*) FROM admin.files`)
+	row := stmt.QueryRow();
+	row.Scan(&count)
 
-	
-	return files, nil
+	return files, count, nil
 }

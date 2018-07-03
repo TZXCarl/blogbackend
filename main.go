@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"file/domain"
 )
 
 type handler struct {
@@ -88,11 +89,17 @@ func GetFiles(w http.ResponseWriter, r *http.Request) {
 		if r.FormValue("pageNum") != "" {
 			pageNum, _ = strconv.Atoi(r.FormValue("pageNum"))
 		}
-		files, err := port.GetFiles(pageSize*(pageNum-1), pageNum*pageSize)
+		files, total, err := port.GetFiles(pageSize*(pageNum-1), pageNum*pageSize)
 		if err != nil {
 			utils.HandleServerError(w, err)
 		}
-		tmp, err := json.Marshal(files)
+		res := domain.Result{
+			Data: files,
+			Mate: domain.Mate{
+				Total: total,
+			},
+		}
+		tmp, err := json.Marshal(res)
 
 		wc := 0
 		for wc < len(tmp) {
