@@ -59,13 +59,26 @@ func upload(w http.ResponseWriter, r *http.Request) {
 		io.Copy(f, file)
 
 		id, _ := uuid.NewV4()
-		_, err = port.InsertFile(id.String(), path.String(), handler.Filename, "--", utils.GetTimestamp())
+		_, err = port.InsertFile(id.String(), path.String(), handler.Filename, "-", utils.GetTimestamp())
 		if err != nil {
 			utils.HandleServerError(w, err)
-			fmt.Fprintln(w, "upload failed123!")
+			fmt.Fprintln(w, "upload failed!")
 			return
 		}
-		fmt.Fprintln(w, "upload success!")
+		res := type struct{
+			url  string
+		}{
+			url: "http://static.tangzhengxiong.com/" + path.String(),
+		}
+		tmp, err := json.Marshal(res)
+		wc := 0
+		for wc < len(tmp) {
+			n, err := w.Write(tmp)
+			if err != nil {
+				utils.HandleServerError(w, err)
+			}
+			wc += n
+		}
 	}
 }
 
