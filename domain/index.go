@@ -18,3 +18,7 @@ type Result struct {
 	Error      error       `json:"error"`
 	Mate       Mate        `json:"mate"`
 }
+
+type Url struct {
+	Url  string  `json:"url"`
+}
