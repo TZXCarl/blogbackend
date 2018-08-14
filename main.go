@@ -65,10 +65,11 @@ func upload(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintln(w, "upload failed!")
 			return
 		}
-		res := type struct{
+		url := "http://static.tangzhengxiong.com/" + path.String();
+		res := struct{
 			url  string
 		}{
-			url: "http://static.tangzhengxiong.com/" + path.String(),
+			url: url,
 		}
 		tmp, err := json.Marshal(res)
 		wc := 0
