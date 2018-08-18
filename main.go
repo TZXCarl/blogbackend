@@ -11,6 +11,8 @@ import (
 	"os"
 	"strconv"
 	"file/domain"
+	"path"
+	"regexp"
 )
 
 type handler struct {
@@ -34,6 +36,14 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func insertImg(path string) {
+	res := domain.Url{
+		Url: path,
+	}
+	tmp, _ := json.Marshal(res)
+	_, _ := http.Post("111.231.192.70:9012", "application/json", tmp)
+}
+
 func upload(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
@@ -48,6 +58,7 @@ func upload(w http.ResponseWriter, r *http.Request) {
 
 		if err != nil {
 			utils.HandleHTTPError(w, err)
+			return
 		}
 		defer file.Close()
 		path, _ := uuid.NewV4()
@@ -69,6 +80,12 @@ func upload(w http.ResponseWriter, r *http.Request) {
 		res := domain.Url{
 			Url: url,
 		}
+
+		ext := path.Ext(handler.Filename)
+		if regexp.MatchString(".(png|jpg|gif)$", ext) {
+			insertImg（）
+		}
+
 		tmp, err := json.Marshal(res)
 
 		wc := 0
