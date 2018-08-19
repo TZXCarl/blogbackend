@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
 	"file/domain"
 	"file/port"
@@ -11,8 +10,6 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"path"
-	"regexp"
 	"strconv"
 )
 
@@ -37,19 +34,6 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func insertImg(path string) {
-	res := domain.Url{
-		Url: path,
-	}
-	tmp, _ := json.Marshal(res)
-	reader := bytes.NewReader(tmp)
-	_, err := http.Post("http://111.231.192.70:9012/image", "application/json", reader)
-
-	if err != nil {
-		fmt.Println(err)
-	}
-}
-
 func upload(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
@@ -64,11 +48,10 @@ func upload(w http.ResponseWriter, r *http.Request) {
 
 		if err != nil {
 			utils.HandleHTTPError(w, err)
-			return
 		}
 		defer file.Close()
-		fid, _ := uuid.NewV4()
-		f, err := os.OpenFile("/data/upload_files/"+fid.String(), os.O_WRONLY|os.O_CREATE, 0666)
+		path, _ := uuid.NewV4()
+		f, err := os.OpenFile("/data/upload_files/"+path.String(), os.O_WRONLY|os.O_CREATE, 0666)
 		if err != nil {
 			utils.HandleServerError(w, err)
 		}
@@ -76,26 +59,22 @@ func upload(w http.ResponseWriter, r *http.Request) {
 		io.Copy(f, file)
 
 		id, _ := uuid.NewV4()
-		_, err = port.InsertFile(id.String(), fid.String(), handler.Filename, "-", utils.GetTimestamp())
+		_, err = port.InsertFile(id.String(), path.String(), handler.Filename, "-", utils.GetTimestamp())
 		if err != nil {
 			utils.HandleServerError(w, err)
 			fmt.Fprintln(w, "upload failed!")
 			return
 		}
-		url := "http://static.tangzhengxiong.com/" + fid.String()
-		res := domain.Url{
+		url := "http://static.tangzhengxiong.com/" + path.String()
+		fmt.Println(url)
+		fmt.Println("12312")
+		res := struct {
+			Url string
+		}{
 			Url: url,
 		}
-
-		ext := path.Ext(handler.Filename)
-		fmt.Println(ext)
-		if match, _ := regexp.MatchString(".(png|jpg|gif)$", ext); match == true {
-			fmt.Println("insert")
-			insertImg(url)
-		}
-
 		tmp, err := json.Marshal(res)
-
+		fmt.Println(tmp)
 		wc := 0
 		for wc < len(tmp) {
 			n, err := w.Write(tmp)
