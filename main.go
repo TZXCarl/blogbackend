@@ -69,7 +69,7 @@ func upload(w http.ResponseWriter, r *http.Request) {
 		defer file.Close()
 		fid, _ := uuid.NewV4()
 		ext := path.Ext(handler.Filename)
-		_path :=  fid.String() + ext
+		_path :=  fid.String()
 		f, err := os.OpenFile("/data/upload_files/" + _path, os.O_WRONLY|os.O_CREATE, 0666)
 		if err != nil {
 			utils.HandleServerError(w, err)
