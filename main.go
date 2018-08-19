@@ -89,9 +89,7 @@ func upload(w http.ResponseWriter, r *http.Request) {
 			Url: url,
 		}
 
-		fmt.Println(ext)
 		if match, _ := regexp.MatchString(".(png|jpg|gif)$", ext); match == true {
-			fmt.Println("insert")
 			insertImg(url)
 		}
 
