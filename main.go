@@ -68,7 +68,9 @@ func upload(w http.ResponseWriter, r *http.Request) {
 		}
 		defer file.Close()
 		fid, _ := uuid.NewV4()
-		f, err := os.OpenFile("/data/upload_files/"+fid.String(), os.O_WRONLY|os.O_CREATE, 0666)
+		ext := path.Ext(handler.Filename)
+		_path :=  fid.String() + ext
+		f, err := os.OpenFile("/data/upload_files/" + _path, os.O_WRONLY|os.O_CREATE, 0666)
 		if err != nil {
 			utils.HandleServerError(w, err)
 		}
@@ -76,18 +78,17 @@ func upload(w http.ResponseWriter, r *http.Request) {
 		io.Copy(f, file)
 
 		id, _ := uuid.NewV4()
-		_, err = port.InsertFile(id.String(), fid.String(), handler.Filename, "-", utils.GetTimestamp())
+		_, err = port.InsertFile(id.String(), _path, handler.Filename, "-", utils.GetTimestamp())
 		if err != nil {
 			utils.HandleServerError(w, err)
 			fmt.Fprintln(w, "upload failed!")
 			return
 		}
-		url := "http://static.tangzhengxiong.com/" + fid.String()
+		url := "http://static.tangzhengxiong.com/" + _path
 		res := domain.Url{
 			Url: url,
 		}
 
-		ext := path.Ext(handler.Filename)
 		fmt.Println(ext)
 		if match, _ := regexp.MatchString(".(png|jpg|gif)$", ext); match == true {
 			fmt.Println("insert")
