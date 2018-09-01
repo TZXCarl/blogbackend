@@ -54,7 +54,7 @@ func upload(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
 	w.Header().Add("Access-Control-Allow-Headers", "x-requested-with")
-	w.Header().Add("Content-Type", "application/x-msdownload")
+	w.Header().Add("Content-Type", "multipart/form-data")
 
 	if r.Method == "OPTIONS" {
 		w.WriteHeader(200)
