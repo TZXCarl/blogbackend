@@ -67,7 +67,7 @@ func upload(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		defer file.Close()
-		fid, _ := uuid.NewV4()
+		fid := uuid.NewV4()
 		ext := path.Ext(handler.Filename)
 		_path :=  fid.String()
 		f, err := os.OpenFile("/data/upload_files/" + _path, os.O_WRONLY|os.O_CREATE, 0666)
@@ -77,7 +77,7 @@ func upload(w http.ResponseWriter, r *http.Request) {
 		defer f.Close()
 		io.Copy(f, file)
 
-		id, _ := uuid.NewV4()
+		id := uuid.NewV4()
 		_, err = port.InsertFile(id.String(), _path, handler.Filename, "-", utils.GetTimestamp())
 		if err != nil {
 			utils.HandleServerError(w, err)
