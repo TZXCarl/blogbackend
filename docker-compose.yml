@@ -1,8 +1,6 @@
 version: '3'
 services:
-  web:
+  file:
     build: .
     ports:
      - "9010:9010"
-  file:
-    image: "file:alpine"
