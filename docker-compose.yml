@@ -4,3 +4,5 @@ services:
     build: .
     ports:
      - "9010:9010"
+    volumes:
+     - /data/upload_files:/data/upload_files
